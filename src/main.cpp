@@ -72,7 +72,7 @@ int main(int, char**)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
+    ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer back-ends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -197,7 +197,7 @@ int main(int, char**)
             const float len = arkanoid_settings.debug_draw_normal_length;
             for(const auto& hit : arkanoid_debug_data.hits)
             {
-                bg_drawlist->AddCircleFilled(hit.screen_pos, arkanoid_settings.debug_draw_pos_radius, ImColor(255, 255, 0));
+                bg_drawlist->AddCircleFilled(hit.screen_pos, arkanoid_settings.debug_draw_pos_radius, ImColor(255, 100, 0));
                 bg_drawlist->AddLine(hit.screen_pos, hit.screen_pos + hit.normal * len, ImColor(255, 0, 0));
             }
         }
