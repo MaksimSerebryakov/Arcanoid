@@ -22,7 +22,7 @@ static void glfw_error_callback(int error, const char* description)
 
 struct ArkanoidSettingsExtended : ArkanoidSettings
 {
-    bool step_by_step = false;
+    bool step_by_step = true;
     bool debug_draw = false;
     float debug_draw_pos_radius = 5.0f;
     float debug_draw_normal_length = 30.0f;

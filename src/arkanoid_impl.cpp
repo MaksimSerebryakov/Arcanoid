@@ -12,11 +12,6 @@ Arkanoid* create_arkanoid()
 void ArkanoidImpl::reset(const ArkanoidSettings &settings)
 {
     // TODO:
-    // Implement your game world, bricks and
-    // carriage initialization
-    // ...
-
-    // TODO:
     // remove demo code
     demo_world_size.x = settings.world_size[0];
     demo_world_size.y = settings.world_size[1];
@@ -24,6 +19,14 @@ void ArkanoidImpl::reset(const ArkanoidSettings &settings)
     demo_ball_initial_speed = settings.ball_speed;
     demo_ball_radius = settings.ball_radius;
     demo_ball_velocity = Vect(demo_ball_initial_speed);
+
+    // TODO:
+    // Implement your game world, bricks and
+    // carriage initialization
+    
+    carriage_position = Vect(demo_world_size.x * 0.5f, demo_world_size.y * 0.9f);
+    carriage_height = settings.carriage_height;
+    carriage_width = settings.carriage_width;
 }
 
 void ArkanoidImpl::update(ImGuiIO& io, ArkanoidDebugData& debug_data, float elapsed)
@@ -106,9 +109,24 @@ void ArkanoidImpl::demo_update(ImGuiIO& io, ArkanoidDebugData& debug_data, float
 
 void ArkanoidImpl::demo_draw(ImGuiIO& io, ImDrawList &draw_list)
 {
-    Vect screen_pos = demo_ball_position * demo_world_to_screen;
-    float screen_radius = demo_ball_radius * demo_world_to_screen.x;
-    draw_list.AddCircleFilled(screen_pos, screen_radius, ImColor(100, 255, 100));
+    Vect ball_screen_pos = demo_ball_position * demo_world_to_screen;
+    float ball_screen_radius = demo_ball_radius * demo_world_to_screen.x;
+    draw_list.AddCircleFilled(ball_screen_pos, ball_screen_radius, ImColor(100, 255, 100));
+
+    Vect carriage_screen_pos = carriage_position * demo_world_to_screen;
+    float carriage_screen_width = carriage_width * demo_world_to_screen.x;
+    float carriage_screen_height = carriage_height * demo_world_to_screen.y;
+    draw_list.AddRectFilled(
+        Vect(
+            carriage_screen_pos.x - carriage_screen_width / 2, 
+            carriage_screen_pos.y - carriage_screen_height / 2
+        ), 
+        Vect(
+            carriage_screen_pos.x + carriage_screen_width / 2, 
+            carriage_screen_pos.y + carriage_screen_height / 2
+        ), 
+        ImColor(100, 255, 100)
+    );
 }
 
 void ArkanoidImpl::demo_add_debug_hit(ArkanoidDebugData& debug_data, const Vect& world_pos, const Vect& normal)

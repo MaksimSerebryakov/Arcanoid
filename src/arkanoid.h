@@ -34,6 +34,7 @@ struct ArkanoidSettings
     float ball_speed = 150.0f;
 
     float carriage_width = 100.0f;
+    float carriage_height = 20.0f;
 };
 
 struct ArkanoidDebugData
