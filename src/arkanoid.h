@@ -31,7 +31,7 @@ struct ArkanoidSettings
     float bricks_rows_padding = 5.0f;
 
     float ball_radius = 10.0f;
-    float ball_speed = 150.0f;
+    float ball_speed = 1.0f;
 
     float carriage_width = 100.0f;
     float carriage_height = 20.0f;

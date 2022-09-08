@@ -1,6 +1,7 @@
 #include "arkanoid_impl.h"
 
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 #ifdef USE_ARKANOID_IMPL
 Arkanoid* create_arkanoid()
@@ -76,6 +77,7 @@ void ArkanoidImpl::demo_update(ImGuiIO& io, ArkanoidDebugData& debug_data, float
     // its velocity and elapsed time
     demo_ball_position += demo_ball_velocity * elapsed;
 
+    // proccess ball hits into walls 
     if(demo_ball_position.x < demo_ball_radius)
     {
         demo_ball_position.x += (demo_ball_radius - demo_ball_position.x) * 2.0f;
@@ -104,6 +106,43 @@ void ArkanoidImpl::demo_update(ImGuiIO& io, ArkanoidDebugData& debug_data, float
         demo_ball_velocity.y *= -1.0f;
 
         demo_add_debug_hit(debug_data, Vect(demo_ball_position.x, demo_world_size.y), Vect(0, -1));
+    }
+
+    // proccess ball hits into carriage
+    int where_is_ball = ball_to_carriage();
+    if(where_is_ball == BALL_TO_CARRIAGE::TOP) 
+    {
+        std::cout << "TOP" << std::endl; // TOREMOVE 
+        demo_ball_position.y -= (
+            demo_ball_position.y - (
+                carriage_position.y - carriage_height / 2 - demo_ball_radius
+            )
+        ) * 2.0f;
+        demo_ball_velocity.y *= -1.0f;
+
+        //if ball hits right half of carriage ball flies right, if left half - left
+        if((demo_ball_position.x < carriage_position.x) && (demo_ball_velocity.x > 0) ||
+            (demo_ball_position.x >= carriage_position.x) && (demo_ball_velocity.x < 0))
+        {
+            demo_ball_velocity.x *= -1.0f;
+        }
+    } else if(where_is_ball == BALL_TO_CARRIAGE::LEFT)
+    {
+        std::cout << "LEFT" << std::endl; // TOREMOVE
+        demo_ball_position.x -= (
+            demo_ball_position.x - (
+                carriage_position.x - carriage_width / 2 - demo_ball_radius
+            )
+        ) * 2.0f;
+        demo_ball_velocity.x *= -1.0f;
+    } else if(where_is_ball == BALL_TO_CARRIAGE::RIGHT)
+    {
+        std::cout << "RIGHT" << std::endl; // TOREMOVE
+        demo_ball_position.x += (
+            carriage_position.x + carriage_width / 2 + demo_ball_radius - 
+            demo_ball_position.x
+        ) * 2.0f;
+        demo_ball_velocity.x *= -1.0f;
     }
 }
 
@@ -137,3 +176,28 @@ void ArkanoidImpl::demo_add_debug_hit(ArkanoidDebugData& debug_data, const Vect&
     debug_data.hits.push_back(std::move(hit));
 }
 
+// function returns where ball hits the carriage
+int ArkanoidImpl::ball_to_carriage()
+{
+    if((demo_ball_position.y > carriage_position.y - carriage_height / 2) && 
+        (demo_ball_position.y <= carriage_position.y + carriage_height / 2))
+    {
+        if(demo_ball_position.x < carriage_position.x) 
+        {    
+            if(demo_ball_position.x > carriage_position.x - carriage_width / 2 - demo_ball_radius)
+            {
+                return BALL_TO_CARRIAGE::LEFT;
+            }
+        } else if(demo_ball_position.x < carriage_position.x + carriage_width / 2 + demo_ball_radius)
+        {
+            return BALL_TO_CARRIAGE::RIGHT;
+        }
+    } else if((demo_ball_position.y > carriage_position.y - carriage_height / 2 - demo_ball_radius) &&
+            (demo_ball_position.x >= carriage_position.x - carriage_width / 2 - demo_ball_radius) &&
+            (demo_ball_position.x <= carriage_position.x + carriage_width / 2 + demo_ball_radius))
+    {
+        return BALL_TO_CARRIAGE::TOP;
+    }
+
+    return BALL_TO_CARRIAGE::BOTTOM;
+}

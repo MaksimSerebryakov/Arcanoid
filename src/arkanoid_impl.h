@@ -15,6 +15,7 @@ private:
     void demo_update(ImGuiIO& io, ArkanoidDebugData& debug_data, float elapsed);
     void demo_draw(ImGuiIO& io, ImDrawList& draw_list);
     void demo_add_debug_hit(ArkanoidDebugData& debug_data, const Vect& pos, const Vect& normal);
+    int ball_to_carriage(); 
     
     Vect demo_world_size = Vect(0.0f);
     Vect demo_world_to_screen = Vect(0.0f);
@@ -25,4 +26,12 @@ private:
     float demo_ball_initial_speed = 0.0f;
     float carriage_width = 0.0f;
     float carriage_height = 0.0f;
+
+    enum BALL_TO_CARRIAGE
+    {
+        LEFT,
+        RIGHT,
+        TOP,
+        BOTTOM
+    };
 };
